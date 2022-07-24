@@ -1,0 +1,53 @@
+#!/bin/bash
+val=""
+sure=0
+
+make_sure() {
+  if [[ $sure == "" ]]; then
+    read -p "[Warning] Selecting this mode will turn off the laptop screen. Are you sure? (y/N) " sure
+  fi 
+}
+
+# Check if a mode was given in args
+if [[ -z $1 ]]; then
+  echo "Select one or more of the following options:"
+  echo " 1|L - Enable laptop screen at 1920x1080 (eDP-1)"
+  echo " 2|M - Enable main screen at 1680x1050 (HDMI-1)"
+  echo " 3|S - Enable side screen at 1920x1080 (DP-1)"
+  echo " R   - Rotate side screen to portrait (DP-1)"
+  echo " TV  - Enable laptop and mirror to TV at 1920x1080 (eDP-1 & HDMI-1)";
+  echo -n "Selection: "
+  read val
+  val="${val^^}"
+  echo ""
+else
+  val=$1
+  val="${val^^}"
+fi
+
+# Build command
+cmd_init="xrandr --output eDP-1 --off --output HDMI-1 --off --output DP-1 --off"
+cmd=$cmd_init
+laptop_on=0
+if [[ $val =~ L|1 ]]; then cmd+=" --output eDP-1 --mode 1920x1080 --primary"; laptop_on=1; fi
+if [[ $val =~ M|2 ]]; then cmd+=" --output HDMI-1 --mode 1680x1050 --above eDP-1 --primary"; fi
+if [[ $val =~ S|3 ]]; then cmd+=" --output DP-1 --mode 1920x1080 --left-of eDP-1 --left-of HDMI-1"; fi
+if [[ $val =~ R ]]; then cmd+=" --output DP-1 --rotate left"; fi
+if [[ $val =~ TV ]]; then cmd+=" --output eDP-1 --mode 1920x1080 --output HDMI-1 --mode 1920x1080 --same-as eDP-1"; laptop_on=1; fi
+if [[ $val =~ y|Y ]]; then laptop_on=1; fi
+if [[ $cmd == $cmd_init ]]; then echo "Your arguments were bad and you should feel bad."; exit; fi
+
+if [[ $laptop_on == 0 ]]; then
+    echo "[Warning] Selecting this mode will disable your laptop screen."
+    echo "Should shite hit the fan, press Escape, followed by Win+Enter"
+    echo "and type in \"mon L\" to re-enable your laptop screen."
+    read -p "Proceed? (y/N) " sure
+
+    if [[ $sure != "y" && $sure != "Y" ]]; then
+        echo "No xrandr command will be run. Exiting."
+        exit;
+    fi
+fi
+
+$cmd
+

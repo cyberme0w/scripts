@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# If needed, change the xrandr output names here
+main="DVI-I-2-2"
+side="DVI-I-1-1"
+laptop="eDP"
+tv="HDMI-A-0"
+
 val=""
 sure=0
 
@@ -11,9 +18,9 @@ make_sure() {
 # Check if a mode was given in args
 if [[ -z $1 ]]; then
   echo "Select one or more of the following options:"
-  echo " 1|L - Enable laptop screen at 1920x1080 (eDP-1)"
-  echo " 2|M - Enable main screen at 1680x1050 (HDMI-1)"
-  echo " 3|S - Enable side screen at 1920x1080 (DP-1)"
+  echo " L - Enable laptop screen at 1920x1080 (eDP-1)"
+  echo " M - Enable main screen at 1680x1050 (HDMI-1)"
+  echo " S - Enable side screen at 1920x1080 (DP-1)"
   echo " R   - Rotate side screen to portrait (DP-1)"
   echo " TV  - Enable laptop and mirror to TV at 1920x1080 (eDP-1 & HDMI-1)";
   echo -n "Selection: "
@@ -26,14 +33,14 @@ else
 fi
 
 # Build command
-cmd_init="xrandr --output eDP-1 --off --output HDMI-1 --off --output DP-1 --off"
+cmd_init="xrandr --output $laptop --off --output $main --off --output $side --off"
 cmd=$cmd_init
 laptop_on=0
-if [[ $val =~ L|1 ]]; then cmd+=" --output eDP-1 --mode 1920x1080 --primary"; laptop_on=1; fi
-if [[ $val =~ M|2 ]]; then cmd+=" --output HDMI-1 --mode 1680x1050 --above eDP-1 --primary"; fi
-if [[ $val =~ S|3 ]]; then cmd+=" --output DP-1 --mode 1920x1080 --left-of eDP-1 --left-of HDMI-1"; fi
-if [[ $val =~ R ]]; then cmd+=" --output DP-1 --rotate left"; fi
-if [[ $val =~ TV ]]; then cmd+=" --output eDP-1 --mode 1920x1080 --output HDMI-1 --mode 1920x1080 --same-as eDP-1"; laptop_on=1; fi
+if [[ $val =~ L ]]; then cmd+=" --output $laptop --mode 1920x1080 --primary"; laptop_on=1; fi
+if [[ $val =~ M ]]; then cmd+=" --output $main --mode 1680x1050 --above eDP --primary"; fi
+if [[ $val =~ S ]]; then cmd+=" --output $side --mode 1920x1080 --left-of $laptop --left-of $main"; fi
+if [[ $val =~ R ]]; then cmd+=" --output $side --rotate left"; fi
+if [[ $val =~ TV ]]; then cmd+=" --output $laptop --mode 1920x1080 --output $tv --mode 1920x1080 --same-as $laptop"; laptop_on=1; fi
 if [[ $val =~ y|Y ]]; then laptop_on=1; fi
 if [[ $cmd == $cmd_init ]]; then echo "Your arguments were bad and you should feel bad."; exit; fi
 
@@ -50,4 +57,5 @@ if [[ $laptop_on == 0 ]]; then
 fi
 
 $cmd
+setup_wallpaper.sh
 

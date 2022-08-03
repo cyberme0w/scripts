@@ -34,13 +34,14 @@ fi
 cmd_init="xrandr --output $laptop --off --output $main --off --output $side --off"
 cmd=$cmd_init
 laptop_on=0
+<<<<<<< HEAD
 
-if [[ $val =~ L|1 ]]; then cmd+=" --output $laptop --mode 1920x1080 --primary"; laptop_on=1; fi
-if [[ $val =~ M|2 ]]; then cmd+=" --output $main --mode 1680x1050 --above $laptop --primary"; fi
-if [[ $val =~ S|3 ]]; then cmd+=" --output $side --mode 1920x1080 --left-of $laptop --left-of $main"; fi
+if [[ $val =~ L ]]; then cmd+=" --output $laptop --mode 1920x1080 --primary"; laptop_on=1; fi
+if [[ $val =~ M ]]; then cmd+=" --output $main --mode 1680x1050 --above eDP --primary"; fi
+if [[ $val =~ S ]]; then cmd+=" --output $side --mode 1920x1080 --left-of $laptop --left-of $main"; fi
 if [[ $val =~ R ]]; then cmd+=" --output $side --rotate left"; fi
 if [[ $val =~ TV ]]; then cmd+=" --output $laptop --mode 1920x1080 --output $tv --mode 1920x1080 --same-as $laptop"; laptop_on=1; fi
-if [[ $val =~ y|Y ]]; then laptop_on=1; fi
+if [[ $val =~ Y ]]; then laptop_on=1; fi
 if [[ $cmd == $cmd_init ]]; then echo "Your arguments were bad and you should feel bad."; exit; fi
 
 if [[ $laptop_on == 0 ]]; then
@@ -56,4 +57,5 @@ if [[ $laptop_on == 0 ]]; then
 fi
 
 $cmd
+setup_wallpaper.sh
 

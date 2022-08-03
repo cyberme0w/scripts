@@ -1,7 +1,7 @@
 #!/bin/bash
 main="DisplayPort-0"
 laptop="eDP"
-side="NaN"
+side="HDMI-A-0"
 tv="HDMI-A-0"
 
 val=""
@@ -34,7 +34,6 @@ fi
 cmd_init="xrandr --output $laptop --off --output $main --off --output $side --off"
 cmd=$cmd_init
 laptop_on=0
-<<<<<<< HEAD
 
 if [[ $val =~ L ]]; then cmd+=" --output $laptop --mode 1920x1080 --primary"; laptop_on=1; fi
 if [[ $val =~ M ]]; then cmd+=" --output $main --mode 1680x1050 --above eDP --primary"; fi

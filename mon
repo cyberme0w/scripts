@@ -1,5 +1,5 @@
 #!/bin/bash
-main="DisplayPort-0"
+main="HDMI-A-0"
 laptop="eDP"
 side="HDMI-A-0"
 tv="HDMI-A-0"
@@ -56,5 +56,7 @@ if [[ $laptop_on == 0 ]]; then
 fi
 
 $cmd
-setup_wallpaper.sh
 
+# Fix wallpaper
+wpcmd="$HOME/scripts/setup_wp.sh"
+test -f "$wpcmd" && "$wpcmd"

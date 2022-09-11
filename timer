@@ -51,3 +51,4 @@ while [ "$start" -ge `date +%s` ]; do
 done
 echo "Time's up!"
 notify-send "Timer" "Time's up!"
+mpv "$HOME/Music/Sounds/Alarm_01_Gentle.mp3"

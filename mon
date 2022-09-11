@@ -1,5 +1,5 @@
 #!/bin/bash
-main="HDMI-A-0"
+main="DisplayPort-0"
 laptop="eDP"
 side="HDMI-A-0"
 tv="HDMI-A-0"

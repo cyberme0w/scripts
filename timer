@@ -1,0 +1,53 @@
+#!/bin/bash
+
+HOURS=0
+MINUTES=0
+SECONDS=0
+
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -s|--seconds)
+      SECONDS="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -m|--minutes)
+      MINUTES="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -h|--hours)
+      HOURS="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -*|--*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+
+countdown=$((60*60*$HOURS+60*$MINUTES+$SECONDS))
+if [[ $countdown -eq 0 ]]; then
+    countdown=$((25*60));
+    echo "Starting timer (Default: 25 min))"
+else 
+    echo "Starting timer ($HOURS:$MINUTES:$SECONDS)"
+fi;
+start="$(($(date +%s) + $countdown))"
+
+while [ "$start" -ge `date +%s` ]; do
+    time="$(($start-`date +%s`))";
+    printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)";
+done
+echo "Time's up!"
+notify-send "Timer" "Time's up!"

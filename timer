@@ -1,24 +1,25 @@
 #!/bin/bash
 
-HOURS=0
-MINUTES=0
-SECONDS=0
+# Initial Settings
+H=0 ; M=0 ; S=0
+SOUND_PATH="$HOME/Music/Sounds/Alarm_01_Gentle.mp3"
 
+# Parse Args
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
     -s|--seconds)
-      SECONDS="$2"
+      S="$2"
       shift # past argument
       shift # past value
       ;;
     -m|--minutes)
-      MINUTES="$2"
+      M="$2"
       shift # past argument
       shift # past value
       ;;
     -h|--hours)
-      HOURS="$2"
+      H="$2"
       shift # past argument
       shift # past value
       ;;
@@ -35,15 +36,17 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-
-countdown=$((60*60*$HOURS+60*$MINUTES+$SECONDS))
-if [[ $countdown -eq 0 ]]; then
-    countdown=$((25*60));
-    echo "Starting timer (Default: 25 min))"
+# Calculate and start countdown
+CD=$((60*60*$H+60*$M+$S))
+if [[ $CD -eq 0 ]]; then
+    CD=$((25*60));
+    echo "#############################"
+    echo "# Starting timer (00:25:00) #"
 else 
-    echo "Starting timer ($HOURS:$MINUTES:$SECONDS)"
+    echo "#############################"
+    printf "# Starting timer (%02d:%02d:%02d) #\n" $H $M $S
 fi;
-start="$(($(date +%s) + $countdown))"
+start="$(($(date +%s) + $CD))"
 
 while [ "$start" -ge `date +%s` ]; do
     time="$(($start-`date +%s`))";
@@ -51,4 +54,4 @@ while [ "$start" -ge `date +%s` ]; do
 done
 echo "Time's up!"
 notify-send "Timer" "Time's up!"
-mpv "$HOME/Music/Sounds/Alarm_01_Gentle.mp3"
+mpv $SOUND_PATH

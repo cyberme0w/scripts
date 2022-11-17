@@ -1,0 +1,21 @@
+#!/bin/bash
+SINKS=$(pacmd list-sinks | grep 'name:')
+declare -A sinks
+
+for line in $SINKS; do
+  [[ $line =~ name ]] && continue
+  line=${line#*<} # Trim away everything up to <
+  line=${line%>}  # Trim away everything after >
+  [[ $line =~ hdmi          ]] && sinks['hdmi']="$line" && sinks['tv']="$line"
+  [[ $line =~ blue          ]] && sinks['bt']="$line"
+  [[ $line =~ analog-stereo ]] && sinks['laptop']="$line"
+done
+
+res=$(pacmd set-default-sink ${sinks[$1]}) 
+
+[[ $res =~ "You need to specify" ]] \
+  && echo "Could not set audio output to $1" \
+  && exit 1
+
+echo "Audio output set to $1"
+
